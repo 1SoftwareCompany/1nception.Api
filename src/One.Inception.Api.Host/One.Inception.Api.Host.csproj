@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net9.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="1nception.EventStore.Cassandra" Version="12.0.0" />
+    <PackageReference Include="1nception.Projections.Cassandra" Version="12.0.0" />
+    <PackageReference Include="1nception.Serialization.NewtonsoftJson" Version="12.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\One.Inception.Api.Playground.Domain\One.Inception.Api.Playground.Domain.csproj" />
+    <ProjectReference Include="..\One.Inception.Api\One.Inception.Api.csproj" />
+  </ItemGroup>
+
+</Project>

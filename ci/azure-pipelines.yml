@@ -1,6 +1,6 @@
 ---
 variables:
-  PROJECT_DIR: Elders.Cronus.Api
+  PROJECT_DIR: 1nception.Api
 
 trigger:
   branches:
