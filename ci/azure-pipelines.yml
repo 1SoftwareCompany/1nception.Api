@@ -1,6 +1,6 @@
 ---
 variables:
-  PROJECT_DIR: 1nception.Api
+  PROJECT_DIR: One.Inception.Api
 
 trigger:
   branches:
