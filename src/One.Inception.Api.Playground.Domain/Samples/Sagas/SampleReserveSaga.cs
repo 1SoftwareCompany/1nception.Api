@@ -11,13 +11,11 @@ namespace One.Inception.Api.Playground.Domain.Samples.Sagas
         {
         }
 
-        public Task HandleAsync(SampleCreated @event)
+        public async Task HandleAsync(SampleCreated @event)
         {
             var cmd = new ReserveSample(@event.Id);
 
-            commandPublisher.Publish(cmd);
-
-            return Task.CompletedTask;
+            await commandPublisher.PublishAsync(cmd);
         }
     }
 }
