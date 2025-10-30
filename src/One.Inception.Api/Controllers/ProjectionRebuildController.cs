@@ -4,6 +4,7 @@ using One.Inception.EventStore.Players;
 using One.Inception.MessageProcessing;
 using One.Inception.Projections.Versioning;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace One.Inception.Api.Controllers;
 
@@ -22,7 +23,7 @@ public class ProjectionRebuildController : ApiControllerBase
     }
 
     [HttpPost, Route("Fix"), Route("Rebuild")]
-    public IActionResult Fix([FromBody] RequestModel model)
+    public async Task<IActionResult> Fix([FromBody] RequestModel model)
     {
         model.PlayerOptions ??= new PlayerOptions();
         var replayEventsOptions = new ReplayEventsOptions()
@@ -37,14 +38,14 @@ public class ProjectionRebuildController : ApiControllerBase
 
         var command = new FixProjectionVersion(new ProjectionVersionManagerId(model.ProjectionContractId, contextAccessor.Context.Tenant), model.Hash, replayEventsOptions);
 
-        if (_publisher.Publish(command))
+        if (await _publisher.PublishAsync(command))
             return new OkObjectResult(new ResponseResult());
 
         return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(FixProjectionVersion)}'"));
     }
 
     [HttpPost, Route("New"), Route("Replay")]
-    public IActionResult New([FromBody] RequestModel model)
+    public async Task<IActionResult> New([FromBody] RequestModel model)
     {
         model.PlayerOptions ??= new PlayerOptions();
         var replayEventsOptions = new ReplayEventsOptions()
@@ -59,7 +60,7 @@ public class ProjectionRebuildController : ApiControllerBase
 
         var command = new NewProjectionVersion(new ProjectionVersionManagerId(model.ProjectionContractId, contextAccessor.Context.Tenant), model.Hash, replayEventsOptions);
 
-        if (_publisher.Publish(command))
+        if (await _publisher.PublishAsync(command))
             return new OkObjectResult(new ResponseResult());
 
         return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(NewProjectionVersion)}'"));

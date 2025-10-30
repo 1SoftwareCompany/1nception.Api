@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 namespace One.Inception.Api.Controllers;
 
@@ -17,7 +18,7 @@ public class ReplayPublicEventController : ApiControllerBase
     }
 
     [HttpPost, Route("ReplayPublicEvent")]
-    public IActionResult ReplayPublicEvent([FromBody] ReplayPublicEventRequest model)
+    public async Task<IActionResult> ReplayPublicEvent([FromBody] ReplayPublicEventRequest model)
     {
         if (model.ReplayAfter.HasValue)
             ReplayAfterDefaultDate = model.ReplayAfter.Value;
@@ -38,7 +39,7 @@ public class ReplayPublicEventController : ApiControllerBase
             }
         };
 
-        if (signalPublisher.Publish(replay))
+        if (await signalPublisher.PublishAsync(replay))
             return new OkObjectResult(new ResponseResult());
 
         return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish '{nameof(ReplayPublicEventsRequested)}'"));

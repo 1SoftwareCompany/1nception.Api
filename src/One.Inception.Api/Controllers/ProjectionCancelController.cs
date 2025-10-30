@@ -4,6 +4,7 @@ using One.Inception.Projections.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 namespace One.Inception.Api.Controllers;
 
@@ -23,36 +24,36 @@ public class ProjectionCancelController : ApiControllerBase
     }
 
     [HttpPost, Route("Pause")]
-    public IActionResult Pause([FromBody] ProjcetionRequestModel model)
+    public async Task<IActionResult> Pause([FromBody] ProjcetionRequestModel model)
     {
         var version = new Projections.ProjectionVersion(model.ProjectionContractId, ProjectionStatus.Create(model.Version.Status), model.Version.Revision, model.Version.Hash);
         var command = new PauseProjectionVersion(new ProjectionVersionManagerId(model.ProjectionContractId, contextAccessor.Context.Tenant), version);
 
-        if (_publisher.Publish(command))
+        if (await _publisher.PublishAsync(command))
             return new OkObjectResult(new ResponseResult());
 
         return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(NewProjectionVersion)}'"));
     }
 
     [HttpPost, Route("Cancel")]
-    public IActionResult Cancel([FromBody] ProjcetionRequestModel model)
+    public async Task<IActionResult> Cancel([FromBody] ProjcetionRequestModel model)
     {
         var version = new Projections.ProjectionVersion(model.ProjectionContractId, ProjectionStatus.Create(model.Version.Status), model.Version.Revision, model.Version.Hash);
         var command = new CancelProjectionVersionRequest(new ProjectionVersionManagerId(model.ProjectionContractId, contextAccessor.Context.Tenant), version, model.Reason ?? "Canceled by user");
 
-        if (_publisher.Publish(command))
+        if (await _publisher.PublishAsync(command))
             return new OkObjectResult(new ResponseResult());
 
         return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(CancelProjectionVersionRequest)}'"));
     }
 
     [HttpPost, Route("Finalize")]
-    public IActionResult Finalize([FromBody] ProjcetionRequestModel model)
+    public async Task<IActionResult> Finalize([FromBody] ProjcetionRequestModel model)
     {
         var version = new Projections.ProjectionVersion(model.ProjectionContractId, ProjectionStatus.Create(model.Version.Status), model.Version.Revision, model.Version.Hash);
         var command = new FinalizeProjectionVersionRequest(new ProjectionVersionManagerId(model.ProjectionContractId, contextAccessor.Context.Tenant), version);
 
-        if (_publisher.Publish(command))
+        if (await _publisher.PublishAsync(command))
             return new OkObjectResult(new ResponseResult());
 
         return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(FinalizeProjectionVersionRequest)}'"));

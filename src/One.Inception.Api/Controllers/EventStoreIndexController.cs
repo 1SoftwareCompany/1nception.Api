@@ -47,11 +47,11 @@ public class EventStoreIndexController : ApiControllerBase
     }
 
     [HttpPost, Route("Rebuild")]
-    public IActionResult Rebuild([FromBody] RebuildIndexRequestModel model)
+    public async Task<IActionResult> Rebuild([FromBody] RebuildIndexRequestModel model)
     {
         var command = new RebuildIndexCommand(new EventStoreIndexManagerId(model.Id, contextAccessor.Context.Tenant), model.MaxDegreeOfParallelism);
 
-        if (publisher.Publish(command))
+        if (await publisher.PublishAsync(command))
             return new OkObjectResult(new ResponseResult());
 
         return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(RebuildIndexCommand)}'"));

@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using One.Inception.EventStore.Index;
 using One.Inception.MessageProcessing;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace One.Inception.Api.Controllers;
 
@@ -21,22 +22,22 @@ public class IndexRebuildActionsController : ApiControllerBase
     }
 
     [HttpPost, Route("Rebuild")]
-    public IActionResult Rebuild([FromBody] IndexRequestModel model)
+    public async Task<IActionResult> Rebuild([FromBody] IndexRequestModel model)
     {
         var command = new RebuildIndexCommand(new EventStoreIndexManagerId(model.IndexContractId, contextAccessor.Context.Tenant), model.MaxDegreeOfParallelism);
 
-        if (_publisher.Publish(command))
+        if (await _publisher.PublishAsync(command))
             return new OkObjectResult(new ResponseResult());
 
         return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(FinalizeEventStoreIndexRequest)}'"));
     }
 
     [HttpPost, Route("Finalize")]
-    public IActionResult Finalize([FromBody] IndexRequestModel model)
+    public async Task<IActionResult> Finalize([FromBody] IndexRequestModel model)
     {
         var command = new FinalizeEventStoreIndexRequest(new EventStoreIndexManagerId(model.IndexContractId, contextAccessor.Context.Tenant));
 
-        if (_publisher.Publish(command))
+        if (await _publisher.PublishAsync(command))
             return new OkObjectResult(new ResponseResult());
 
         return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(FinalizeEventStoreIndexRequest)}'"));
