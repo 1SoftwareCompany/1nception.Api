@@ -36,7 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="1nception.AspNet" Version="13.0.0-preview.2" />
+    <PackageReference Include="1nception.AspNet" Version="13.0.0-preview.3" />
   </ItemGroup>
 
 </Project>
