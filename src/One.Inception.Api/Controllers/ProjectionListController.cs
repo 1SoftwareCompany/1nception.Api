@@ -43,11 +43,18 @@ public class ProjectionListController : ApiControllerBase
             var id = new ProjectionVersionManagerId(meta.GetContractId(), contextAccessor.Context.Tenant);
             var dto = await _projectionExplorer.ExploreAsync(id, typeof(ProjectionVersionsHandler));
             ProjectionVersionsHandlerState state = dto?.State as ProjectionVersionsHandlerState;
+
+            ProjectionAttribute contract = meta
+                .GetCustomAttributes(true).Where(attr => attr is ProjectionAttribute)
+                .SingleOrDefault() as ProjectionAttribute;
+
             var metaProjection = new ProjectionMeta()
             {
                 ProjectionContractId = meta.GetContractId(),
                 ProjectionName = meta.Name,
-                IsReplayable = typeof(IAmEventSourcedProjection).IsAssignableFrom(meta) || typeof(IProjectionDefinition).IsAssignableFrom(meta)
+                IsReplayable = contract is not null,
+                IsRebuildable = contract is not null && contract.Persistence == ProjectionEventsPersistenceSetting.Persistent, // why would you want a new version for not persisted projection, only fixing is allowed
+                IsSearchable = typeof(IProjectionDefinition).IsAssignableFrom(meta)
             };
             if (ReferenceEquals(null, state))
             {
@@ -99,6 +106,10 @@ public class ProjectionMeta
     public string ProjectionName { get; set; }
 
     public bool IsReplayable { get; set; }
+
+    public bool IsRebuildable { get; set; }
+
+    public bool IsSearchable { get; set; }
 
     public List<ProjectionVersionDto> Versions { get; set; }
 }

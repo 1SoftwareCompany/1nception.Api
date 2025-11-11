@@ -46,11 +46,17 @@ public class ProjectionMetaController : ApiControllerBase
         ProjectionDto dto = await _projectionExplorer.ExploreAsync(id, typeof(ProjectionVersionsHandler));
         var state = dto?.State as ProjectionVersionsHandlerState;
 
+        ProjectionAttribute contract = metadata
+            .GetCustomAttributes(true).Where(attr => attr is ProjectionAttribute)
+            .SingleOrDefault() as ProjectionAttribute;
+
         var metaProjection = new ProjectionMeta()
         {
             ProjectionContractId = metadata.GetContractId(),
             ProjectionName = metadata.Name,
-            IsReplayable = typeof(IAmEventSourcedProjection).IsAssignableFrom(metadata) || typeof(IProjectionDefinition).IsAssignableFrom(metadata)
+            IsReplayable = contract is not null,
+            IsRebuildable = contract is not null && contract.Persistence == ProjectionEventsPersistenceSetting.Persistent, // why would you want a new version for not persisted projection, only fixing is allowed
+            IsSearchable = typeof(IProjectionDefinition).IsAssignableFrom(metadata)
         };
 
         if (state is null)

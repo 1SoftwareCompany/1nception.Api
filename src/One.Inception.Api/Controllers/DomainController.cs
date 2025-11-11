@@ -158,7 +158,7 @@ public partial class DomainController : ApiControllerBase
            {
                Id = meta.GetCustomAttribute<DataContractAttribute>().Name,
                Name = meta.Name,
-               IsEventSourced = typeof(IAmEventSourcedProjection).IsAssignableFrom(meta),
+               IsEventSourced = IsEventSourced(meta),
                Events = meta
                             .GetInterfaces()
                                 .Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEventHandler<>))
@@ -170,6 +170,12 @@ public partial class DomainController : ApiControllerBase
                                         Name = x.Name
                                     }).ToList()
            });
+    }
+
+    private bool IsEventSourced(Type projection)
+    {
+        bool isEventSourced = typeof(IProjection).IsAssignableFrom(projection) && projection.IsPersistedProjection();
+        return isEventSourced;
     }
 
     private ICollection<Command_Response> GetCommands(IEnumerable<Assembly> loadedAssemblies)

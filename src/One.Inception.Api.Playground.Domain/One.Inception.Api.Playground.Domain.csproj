@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="1nception" Version="13.0.0-preview.3" />
+    <PackageReference Include="1nception" Version="13.0.0-preview.4" />
   </ItemGroup>
 
 </Project>
