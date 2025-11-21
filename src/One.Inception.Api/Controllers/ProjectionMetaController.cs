@@ -56,7 +56,8 @@ public class ProjectionMetaController : ApiControllerBase
             ProjectionName = metadata.Name,
             IsReplayable = contract is not null,
             IsRebuildable = contract is not null && contract.Persistence == ProjectionEventsPersistenceSetting.Persistent, // why would you want a new version for not persisted projection, only fixing is allowed
-            IsSearchable = typeof(IProjectionDefinition).IsAssignableFrom(metadata)
+            IsSearchable = typeof(IProjectionDefinition).IsAssignableFrom(metadata),
+            AfterTimestampFromAttribute = contract.Timestamp
         };
 
         if (state is null)
