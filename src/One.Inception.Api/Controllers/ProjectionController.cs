@@ -21,7 +21,8 @@ public class ProjectionController : ApiControllerBase
     public async Task<IActionResult> ExploreAsync([FromQuery] RequestModel model)
     {
         var projectionType = model.ProjectionName.GetTypeByContract();
-        ProjectionDto result = await _projectionExplorer.ExploreAsync(new Urn(model.Id), projectionType, model.AsOf).ConfigureAwait(false);
+        IBlobId id = GetId(model.Id);
+        ProjectionDto result = await _projectionExplorer.ExploreAsync(id, projectionType, model.AsOf).ConfigureAwait(false);
         return new OkObjectResult(new ResponseResult<ProjectionDto>(result));
     }
 
@@ -29,10 +30,27 @@ public class ProjectionController : ApiControllerBase
     public async Task<IActionResult> ExploreEvents([FromQuery] RequestModel model)
     {
         var projectionType = model.ProjectionName.GetTypeByContract();
-        ProjectionDto result = await _projectionExplorer.ExploreIncludingEventsAsync(new Urn(model.Id), projectionType, model.AsOf).ConfigureAwait(false);
+        IBlobId id = GetId(model.Id);
+        ProjectionDto result = await _projectionExplorer.ExploreIncludingEventsAsync(id, projectionType, model.AsOf).ConfigureAwait(false);
         result.State = null;
 
         return new OkObjectResult(new ResponseResult<ProjectionDto>(result));
+    }
+
+    private IBlobId GetId(string theId)
+    {
+        if (theId.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+        {
+            theId = theId[2..];
+            byte[] bytes = Convert.FromHexString(theId);
+
+            IBlobId idForSearch = new BlobIdForSearch(bytes);
+            return idForSearch;
+        }
+        else
+        {
+            return new Urn(theId);
+        }
     }
 
     public class RequestModel
@@ -45,4 +63,14 @@ public class ProjectionController : ApiControllerBase
 
         public DateTimeOffset? AsOf { get; set; }
     }
+}
+
+public class BlobIdForSearch : IBlobId
+{
+    public BlobIdForSearch(byte[] bytes)
+    {
+        RawId = bytes;
+    }
+
+    public ReadOnlyMemory<byte> RawId { get; set; }
 }
