@@ -97,7 +97,7 @@ public partial class DomainController : ApiControllerBase
                 Name = meta.Name,
                 Events = meta
                             .GetInterfaces()
-                                .Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEventHandler<>))
+                                .Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEventHandle<>))
                                 .SelectMany(ff => ff.GetGenericArguments()).Where(x => typeof(IEvent).IsAssignableFrom(x))
                                 .Select(x =>
                                     new Event_Response
@@ -118,7 +118,7 @@ public partial class DomainController : ApiControllerBase
                 Name = meta.Name,
                 Events = meta
                             .GetInterfaces()
-                                .Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEventHandler<>))
+                                .Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEventHandle<>))
                                 .SelectMany(ff => ff.GetGenericArguments()).Where(x => typeof(IEvent).IsAssignableFrom(x))
                                 .Select(x =>
                                     new Event_Response
@@ -132,14 +132,14 @@ public partial class DomainController : ApiControllerBase
     private ICollection<Saga_Response> GetSagas(IEnumerable<Assembly> loadedAssemblies)
     {
         return RetrieveTypesFromAssemblies(loadedAssemblies,
-           x => HandlerRetrieveRequirements<ISaga>(x) && x.GetCustomAttributes(typeof(DataContractAttribute), false).Length > 0,
+           x => HandlerRetrieveRequirements<IProcessManager>(x) && x.GetCustomAttributes(typeof(DataContractAttribute), false).Length > 0,
            meta => new Saga_Response
            {
                Id = meta.GetContractId(),
                Name = meta.Name,
                Events = meta
                             .GetInterfaces()
-                                .Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEventHandler<>))
+                                .Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEventHandle<>))
                                 .SelectMany(ff => ff.GetGenericArguments()).Where(x => typeof(IEvent).IsAssignableFrom(x))
                                 .Select(x =>
                                     new Event_Response
@@ -161,7 +161,7 @@ public partial class DomainController : ApiControllerBase
                IsEventSourced = IsEventSourced(meta),
                Events = meta
                             .GetInterfaces()
-                                .Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEventHandler<>))
+                                .Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEventHandle<>))
                                 .SelectMany(ff => ff.GetGenericArguments()).Where(x => typeof(IEvent).IsAssignableFrom(x))
                                 .Select(x =>
                                     new Event_Response
@@ -226,7 +226,7 @@ public partial class DomainController : ApiControllerBase
                 Name = meta.Name,
                 Commands = GetAggregateAppService(loadedAssemblies, meta)
                                 ?.GetInterfaces()
-                                ?.Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ICommandHandler<>))
+                                ?.Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ICommandHandle<>))
                                 ?.SelectMany(ff => ff.GetGenericArguments()).Where(x => typeof(ICommand).IsAssignableFrom(x))
                                 ?.Select(x =>
                                     new Command_Response
