@@ -6,7 +6,7 @@ namespace One.Inception.Api.Playground.Domain.Samples
 {
     [DataContract(Name = "2cb8a10c-1ca0-41cd-a451-53dc520a4085")]
     public class IsSampleReservedProjection : ProjectionDefinition<SampleApiProjectionState, SampleId>,
-        IEventHandler<SampleReserved>
+        IEventHandle<SampleReserved>
     {
         public IsSampleReservedProjection()
         {

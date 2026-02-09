@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace One.Inception.Api.Playground.Domain.Samples.Gateways
 {
     public class SampleGateway : IGateway,
-        IEventHandler<SampleReserved>
+        IEventHandle<SampleReserved>
     {
         public Task HandleAsync(SampleReserved @event)
         {

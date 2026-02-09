@@ -13,8 +13,8 @@ namespace One.Inception.Api.Playground.Domain.Samples
     /// </remarks>
     [DataContract(Name = "f5bccb43-99be-4639-a9b7-1cb46e80dc7a")]
     public class SampleApiProjection : ProjectionDefinition<SampleApiProjectionState, SampleId>,
-        IEventHandler<SampleCreated>,
-        IEventHandler<SampleReserved>
+        IEventHandle<SampleCreated>,
+        IEventHandle<SampleReserved>
     {
         //  * AVOID BIG collections with Cronus projections. Use ElasticSearch for search purposes.
         // List<string> collection = new List<string>();

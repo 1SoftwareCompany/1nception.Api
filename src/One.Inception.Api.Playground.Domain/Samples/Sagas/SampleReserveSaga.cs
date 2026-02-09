@@ -2,8 +2,8 @@
 
 namespace One.Inception.Api.Playground.Domain.Samples.Sagas
 {
-    public class SampleReserveSaga : Saga,
-        IEventHandler<SampleCreated>
+    public class SampleReserveSaga : ProcessManager,
+        IEventHandle<SampleCreated>
     {
 
         public SampleReserveSaga(IPublisher<ICommand> commandPublisher, IPublisher<IScheduledMessage> timeoutRequestPublisher)
