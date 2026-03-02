@@ -32,7 +32,7 @@ public class ReplayPublicEventController : ApiControllerBase
             RecipientBoundedContext = model.RecipientBoundedContext,
             RecipientHandlers = model.RecipientHandlers,
             SourceEventTypeId = model.SourceEventTypeId,
-            ReplayOptions = new ReplayEventsOptions()
+            ReplayOptions = new ReplayEventsOptionNew()
             {
                 After = ReplayAfterDefaultDate,
                 Before = ReplayBeforeDefaultDate
