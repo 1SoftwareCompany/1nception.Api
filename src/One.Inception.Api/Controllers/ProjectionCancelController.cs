@@ -32,7 +32,7 @@ public class ProjectionCancelController : ApiControllerBase
         if (await _publisher.PublishAsync(command))
             return new OkObjectResult(new ResponseResult());
 
-        return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(NewProjectionVersion)}'"));
+        return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(NewProjectionVersion)}'", $"Unable to publish command '{nameof(NewProjectionVersion)}'"));
     }
 
     [HttpPost, Route("Cancel")]
@@ -44,7 +44,7 @@ public class ProjectionCancelController : ApiControllerBase
         if (await _publisher.PublishAsync(command))
             return new OkObjectResult(new ResponseResult());
 
-        return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(CancelProjectionVersionRequest)}'"));
+        return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(CancelProjectionVersionRequest)}'", $"Unable to publish command '{nameof(CancelProjectionVersionRequest)}'"));
     }
 
     [HttpPost, Route("Finalize")]
@@ -56,7 +56,7 @@ public class ProjectionCancelController : ApiControllerBase
         if (await _publisher.PublishAsync(command))
             return new OkObjectResult(new ResponseResult());
 
-        return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(FinalizeProjectionVersionRequest)}'"));
+        return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(FinalizeProjectionVersionRequest)}'", $"Unable to publish command '{nameof(FinalizeProjectionVersionRequest)}'"));
     }
 
     public class ProjcetionRequestModel

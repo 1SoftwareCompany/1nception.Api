@@ -54,7 +54,7 @@ public class EventStoreIndexController : ApiControllerBase
         if (await publisher.PublishAsync(command))
             return new OkObjectResult(new ResponseResult());
 
-        return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(RebuildIndexCommand)}'"));
+        return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(RebuildIndexCommand)}'", $"Unable to publish command '{nameof(RebuildIndexCommand)}'"));
     }
 
     public class MetaResponseModel

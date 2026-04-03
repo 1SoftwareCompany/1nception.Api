@@ -33,7 +33,7 @@ public class ReplayEventController : ApiControllerBase
 
         Event_Response_New found = allEvents.Where(x => x.Id.Equals(model.SourceEventTypeId)).SingleOrDefault();
         if (found is null)
-            return new BadRequestObjectResult(new ResponseResult<string>($"Unable to start replay. This event is not found."));
+            return new BadRequestObjectResult(new ResponseResult<string>($"Unable to start replay. This event is not found.", $"Unable to start replay. This event is not found."));
 
         Urn urn = null;
         if (string.IsNullOrEmpty(model.AggregateId) == false)
@@ -42,10 +42,10 @@ public class ReplayEventController : ApiControllerBase
         if (found.IsPublicEvent)
         {
             if (string.IsNullOrEmpty(found.BC))
-                return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish '{nameof(ReplayPublicEventsRequested)}'. BC of public event not found."));
+                return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish '{nameof(ReplayPublicEventsRequested)}'. BC of public event not found.", $"Unable to publish '{nameof(ReplayPublicEventsRequested)}'. BC of public event not found."));
 
             if (model.RecipientBoundedContext.Equals(found.BC, StringComparison.OrdinalIgnoreCase))
-                return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish '{nameof(ReplayPublicEventsRequested)}'.Can not publish public event in the same bounded context."));
+                return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish '{nameof(ReplayPublicEventsRequested)}'.Can not publish public event in the same bounded context.", $"Unable to publish '{nameof(ReplayPublicEventsRequested)}'.Can not publish public event in the same bounded context."));
 
             var replay = new ReplayPublicEventsRequested()
             {
@@ -89,11 +89,11 @@ public class ReplayEventController : ApiControllerBase
             }
             else
             {
-                return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish '{nameof(ReplayPublicEventsRequested)}'.Can not publish internal event in another bounded context."));
+                return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish '{nameof(ReplayPublicEventsRequested)}'.Can not publish internal event in another bounded context.", $"Unable to publish '{nameof(ReplayPublicEventsRequested)}'.Can not publish internal event in another bounded context."));
             }
         }
 
-        return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish '{nameof(ReplayPublicEventsRequested)}'"));
+        return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish '{nameof(ReplayPublicEventsRequested)}'", $"Unable to publish '{nameof(ReplayPublicEventsRequested)}'"));
     }
 }
 

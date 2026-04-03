@@ -29,7 +29,7 @@ public class IndexRebuildActionsController : ApiControllerBase
         if (await _publisher.PublishAsync(command))
             return new OkObjectResult(new ResponseResult());
 
-        return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(FinalizeEventStoreIndexRequest)}'"));
+        return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(FinalizeEventStoreIndexRequest)}'", $"Unable to publish command '{nameof(FinalizeEventStoreIndexRequest)}'"));
     }
 
     [HttpPost, Route("Finalize")]
@@ -40,7 +40,7 @@ public class IndexRebuildActionsController : ApiControllerBase
         if (await _publisher.PublishAsync(command))
             return new OkObjectResult(new ResponseResult());
 
-        return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(FinalizeEventStoreIndexRequest)}'"));
+        return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(FinalizeEventStoreIndexRequest)}'", $"Unable to publish command '{nameof(FinalizeEventStoreIndexRequest)}'"));
     }
 
     public class IndexRequestModel

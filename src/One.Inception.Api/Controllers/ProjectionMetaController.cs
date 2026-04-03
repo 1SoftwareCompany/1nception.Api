@@ -40,7 +40,7 @@ public class ProjectionMetaController : ApiControllerBase
             .Where(x => x.GetContractId() == model.ProjectionContractId)
             .FirstOrDefault();
 
-        if (metadata is null) return new BadRequestObjectResult(new ResponseResult<string>($"Projection with contract '{model.ProjectionContractId}' not found"));
+        if (metadata is null) return new BadRequestObjectResult(new ResponseResult<string>($"Projection with contract '{model.ProjectionContractId}' not found", $"Projection with contract '{model.ProjectionContractId}' not found"));
 
         var id = new ProjectionVersionManagerId(model.ProjectionContractId, contextAccessor.Context.Tenant);
         ProjectionDto dto = await _projectionExplorer.ExploreAsync(id, typeof(ProjectionVersionsHandler));
