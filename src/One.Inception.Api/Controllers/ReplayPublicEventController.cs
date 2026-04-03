@@ -41,7 +41,7 @@ public class ReplayPublicEventController : ApiControllerBase
         if (signalPublisher.Publish(replay))
             return new OkObjectResult(new ResponseResult());
 
-        return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish '{nameof(ReplayPublicEventsRequested)}'"));
+        return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish '{nameof(ReplayPublicEventsRequested)}'", $"Unable to publish '{nameof(ReplayPublicEventsRequested)}'"));
     }
 }
 

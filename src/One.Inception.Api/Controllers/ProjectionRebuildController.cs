@@ -40,7 +40,7 @@ public class ProjectionRebuildController : ApiControllerBase
         if (_publisher.Publish(command))
             return new OkObjectResult(new ResponseResult());
 
-        return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(FixProjectionVersion)}'"));
+        return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(FixProjectionVersion)}'", $"Unable to publish command '{nameof(FixProjectionVersion)}'"));
     }
 
     [HttpPost, Route("New"), Route("Replay")]
@@ -62,7 +62,7 @@ public class ProjectionRebuildController : ApiControllerBase
         if (_publisher.Publish(command))
             return new OkObjectResult(new ResponseResult());
 
-        return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(NewProjectionVersion)}'"));
+        return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(NewProjectionVersion)}'", $"Unable to publish command '{nameof(NewProjectionVersion)}'"));
     }
 
     public class RequestModel
