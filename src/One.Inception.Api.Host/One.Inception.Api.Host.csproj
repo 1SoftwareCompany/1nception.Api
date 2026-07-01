@@ -16,14 +16,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="1nception.EventStore.Cassandra" Version="13.0.0-preview.5" />
-    <PackageReference Include="1nception.Projections.Cassandra" Version="13.0.0-preview.3" />
+    <PackageReference Include="1nception.EventStore.Cassandra" Version="13.0.0-preview.7" />
+    <PackageReference Include="1nception.Projections.Cassandra" Version="13.0.0-preview.4" />
     <PackageReference Include="1nception.Serialization.NewtonsoftJson" Version="13.0.0-preview.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\One.Inception.Api.Playground.Domain\One.Inception.Api.Playground.Domain.csproj" />
     <ProjectReference Include="..\One.Inception.Api\One.Inception.Api.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="10.0.300" />
   </ItemGroup>
 
 </Project>
