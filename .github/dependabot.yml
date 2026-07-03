@@ -2,12 +2,13 @@ version: 2
 
 updates:
   - package-ecosystem: "nuget"
-    directory: "/"
+    directories:
+      - "/"
+      - "/src/*"
     schedule:
       interval: "daily"
-
-    reviewers:
-      - "1SoftwareCompany/soldier"
+      time: "08:00"
+      timezone: "Europe/Sofia"
 
     commit-message:
       prefix: "fix: "
@@ -16,3 +17,9 @@ updates:
       - dependency-name: "*"
         update-types:
           - "version-update:semver-patch"
+
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-major"
