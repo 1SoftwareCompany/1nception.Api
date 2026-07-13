@@ -3,8 +3,8 @@ version: 2
 updates:
   - package-ecosystem: "nuget"
     directories:
-      - "/"
       - "/src/*"
+
     schedule:
       interval: "daily"
       time: "08:00"
@@ -14,12 +14,39 @@ updates:
       prefix: "fix: "
 
     allow:
+      # Microsoft packages: patch + minor
+      - dependency-name: "Microsoft.*"
+        update-types:
+          - "version-update:semver-patch"
+          - "version-update:semver-minor"
+
+      # All packages: patch
       - dependency-name: "*"
         update-types:
           - "version-update:semver-patch"
 
     ignore:
+      # Never create major version update PRs
       - dependency-name: "*"
         update-types:
-          - "version-update:semver-minor"
           - "version-update:semver-major"
+
+    groups:
+      microsoft-updates:
+        applies-to: version-updates
+        patterns:
+          - "Microsoft.*"
+        update-types:
+          - "patch"
+          - "minor"
+
+      all-other-nuget-patches:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "Microsoft.*"
+        update-types:
+          - "patch"
+
+    rebase-strategy: "auto"
