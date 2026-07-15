@@ -14,39 +14,64 @@ updates:
       prefix: "fix: "
 
     allow:
-      # Microsoft packages: patch + minor
-      - dependency-name: "Microsoft.*"
+      # All packages may receive patch and minor updates.
+      # The ignore rules below block minor updates for internal packages.
+      - dependency-name: "*"
         update-types:
           - "version-update:semver-patch"
           - "version-update:semver-minor"
 
-      # All packages: patch
-      - dependency-name: "*"
-        update-types:
-          - "version-update:semver-patch"
-
     ignore:
-      # Never create major version update PRs
+      # Internal packages: patch updates only.
+      - dependency-name: "1nception*"
+        update-types:
+          - "version-update:semver-minor"
+
+      - dependency-name: "one*"
+        update-types:
+          - "version-update:semver-minor"
+
+      - dependency-name: "sett1x*"
+        update-types:
+          - "version-update:semver-minor"
+
+      # Never create major version update PRs.
       - dependency-name: "*"
         update-types:
           - "version-update:semver-major"
 
     groups:
-      microsoft-updates:
+      inception-patches:
         applies-to: version-updates
         patterns:
-          - "Microsoft.*"
+          - "1nception*"
         update-types:
           - "patch"
-          - "minor"
 
-      all-other-nuget-patches:
+      one-patches:
+        applies-to: version-updates
+        patterns:
+          - "one*"
+        update-types:
+          - "patch"
+
+      sett1x-patches:
+        applies-to: version-updates
+        patterns:
+          - "sett1x*"
+        update-types:
+          - "patch"
+
+      all-other-nuget-updates:
         applies-to: version-updates
         patterns:
           - "*"
         exclude-patterns:
-          - "Microsoft.*"
+          - "1nception*"
+          - "one*"
+          - "sett1x*"
         update-types:
           - "patch"
+          - "minor"
 
     rebase-strategy: "auto"
