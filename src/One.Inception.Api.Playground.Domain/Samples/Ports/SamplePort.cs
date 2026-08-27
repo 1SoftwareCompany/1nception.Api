@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace One.Inception.Api.Playground.Domain.Samples.Ports
 {
     public class SamplePort : IPort,
-        IEventHandler<SampleReserved>
+        IEventHandle<SampleReserved>
     {
         public SamplePort(IPublisher<ICommand> commandPublisher)
         {

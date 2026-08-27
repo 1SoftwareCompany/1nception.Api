@@ -81,7 +81,7 @@ public class EventStoreController : ApiControllerBase
                 { MessageHeader.AggregateRootId,  arId.Value}
             };
 
-            publicPublisher.Publish(@event, headers);
+            await publicPublisher.PublishAsync(@event, headers);
 
         }
         else
@@ -101,7 +101,7 @@ public class EventStoreController : ApiControllerBase
                 { MessageHeader.RecipientHandlers, string.Join(',', recipientHandlers) }
             };
 
-            publisher.Publish(eventData.EventToRepublish, headers);
+            await publisher.PublishAsync(eventData.EventToRepublish, headers);
         }
 
         return new OkObjectResult(new ResponseResult());
@@ -133,7 +133,7 @@ public class EventStoreController : ApiControllerBase
                 { MessageHeader.AggregateCommitTimestamp, rawEvent.Timestamp.ToString() },
             };
 
-            publicPublisher.Publish(rawData, eventType, tenant, headers);
+            await publicPublisher.PublishAsync(rawData, eventType, tenant, headers);
         }
         else
         {
@@ -147,7 +147,7 @@ public class EventStoreController : ApiControllerBase
                 { MessageHeader.RecipientHandlers, string.Join(',', recipientHandlers) }
             };
 
-            publisher.Publish(rawData, eventType, tenant, headers);
+            await publisher.PublishAsync(rawData, eventType, tenant, headers);
         }
 
         return new OkObjectResult(new ResponseResult());

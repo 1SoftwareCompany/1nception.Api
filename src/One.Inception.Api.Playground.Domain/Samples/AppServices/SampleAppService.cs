@@ -3,8 +3,8 @@
 namespace One.Inception.Api.Playground.Domain.Samples.AppServices
 {
     public class SampleAppService : ApplicationService<Sample>,
-        ICommandHandler<CreateSample>,
-        ICommandHandler<ReserveSample>
+        ICommandHandle<CreateSample>,
+        ICommandHandle<ReserveSample>
     {
         public SampleAppService(IAggregateRepository repository) : base(repository) { }
 
