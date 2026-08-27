@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="1nception.EventStore.Cassandra" Version="13.0.0-preview.7" />
-    <PackageReference Include="1nception.Projections.Cassandra" Version="13.0.0-preview.4" />
+    <PackageReference Include="1nception.EventStore.Cassandra" Version="13.0.0" />
+    <PackageReference Include="1nception.Projections.Cassandra" Version="13.0.0" />
     <PackageReference Include="1nception.Serialization.NewtonsoftJson" Version="13.0.0-preview.2" />
   </ItemGroup>
 
