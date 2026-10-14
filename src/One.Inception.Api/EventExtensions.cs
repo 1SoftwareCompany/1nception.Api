@@ -1,12 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using One.Inception.Projections;
+using System;
+using System.Collections.Generic;
+using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace One.Inception.Api;
 
 public static class EventExtensions
 {
-    public static ProjectionCommitDto ToProjectionDto(this ProjectionCommit commit)
+static readonly JsonSerializer PayloadSerializer = JsonSerializer.Create(new JsonSerializerSettings
+{
+    ContractResolver = new CamelCasePropertyNamesContractResolver()
+});
+
+public static ProjectionCommitDto ToProjectionDto(this ProjectionCommit commit)
     {
         return new ProjectionCommitDto()
         {
@@ -71,10 +80,13 @@ public static class EventExtensions
 
     public static RawEventDto ToRawEventDto(this IMessage @event, DateTimeOffset timestamp, int position, int revision)
     {
+        var rawEvent = new RawEventDto();
+
         var entityEvent = @event as EntityEvent;
+
         if (entityEvent is null)
         {
-            return new RawEventDto()
+            rawEvent = new RawEventDto()
             {
                 Id = @event.GetType().GetContractId(),
                 EventName = @event.GetType().Name,
@@ -88,7 +100,7 @@ public static class EventExtensions
         }
         else
         {
-            return new RawEventDto()
+            rawEvent = new RawEventDto()
             {
                 Id = entityEvent.Event.GetType().GetContractId(),
                 EventName = entityEvent.Event.GetType().Name,
@@ -100,6 +112,12 @@ public static class EventExtensions
                 Timestamp = timestamp
             };
         }
+
+        var data = JObject.FromObject(rawEvent.EventData, PayloadSerializer);
+        data["messageId"] = @event.MessageId?.ToString();
+
+        rawEvent.EventData = data;
+        return rawEvent;
     }
 
     public static IEnumerable<EventDto> ToPublicEventDto(this IEnumerable<IPublicEvent> events, int lastEventPosition)
