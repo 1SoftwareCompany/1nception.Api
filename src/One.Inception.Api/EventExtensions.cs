@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
 using One.Inception.Projections;
 using System;
 using System.Collections.Generic;
@@ -10,12 +9,7 @@ namespace One.Inception.Api;
 
 public static class EventExtensions
 {
-static readonly JsonSerializer PayloadSerializer = JsonSerializer.Create(new JsonSerializerSettings
-{
-    ContractResolver = new CamelCasePropertyNamesContractResolver()
-});
-
-public static ProjectionCommitDto ToProjectionDto(this ProjectionCommit commit)
+    public static ProjectionCommitDto ToProjectionDto(this ProjectionCommit commit)
     {
         return new ProjectionCommitDto()
         {
@@ -90,7 +84,7 @@ public static ProjectionCommitDto ToProjectionDto(this ProjectionCommit commit)
             {
                 Id = @event.GetType().GetContractId(),
                 EventName = @event.GetType().Name,
-                EventData = @event,
+                EventData = new EventDataWithMessageId(@event, @event.GetMessageId()),
                 IsEntityEvent = false,
                 EventPosition = position,
                 EventRevision = revision,
@@ -104,7 +98,7 @@ public static ProjectionCommitDto ToProjectionDto(this ProjectionCommit commit)
             {
                 Id = entityEvent.Event.GetType().GetContractId(),
                 EventName = entityEvent.Event.GetType().Name,
-                EventData = entityEvent.Event,
+                EventData = new EventDataWithMessageId(entityEvent.Event, entityEvent.GetMessageId()),
                 IsEntityEvent = true,
                 EventPosition = position,
                 EventRevision = revision,
@@ -113,10 +107,6 @@ public static ProjectionCommitDto ToProjectionDto(this ProjectionCommit commit)
             };
         }
 
-        var data = JObject.FromObject(rawEvent.EventData, PayloadSerializer);
-        data["messageId"] = @event.MessageId?.ToString();
-
-        rawEvent.EventData = data;
         return rawEvent;
     }
 
@@ -137,4 +127,40 @@ public static ProjectionCommitDto ToProjectionDto(this ProjectionCommit commit)
             eventPosition++;
         }
     }
+}
+
+
+[JsonConverter(typeof(EventDataWithMessageIdConverter))]
+public sealed class EventDataWithMessageId
+{
+    public EventDataWithMessageId(object @event, string? messageId)
+    {
+        Event = @event;
+        MessageId = messageId;
+    }
+
+    public object Event { get; }
+    public string MessageId { get; }
+}
+
+public sealed class EventDataWithMessageIdConverter : JsonConverter<EventDataWithMessageId>
+{
+    public override bool CanRead => false;
+
+    public override void WriteJson(JsonWriter writer, EventDataWithMessageId? value, JsonSerializer serializer)
+    {
+        if (value is null)
+        {
+            writer.WriteNull();
+            return;
+        }
+
+        // 'serializer' is MVC's serializer, so rawId etc. come out exactly as before
+        var obj = JObject.FromObject(value.Event, serializer);
+        obj["messageId"] = value.MessageId;
+        obj.WriteTo(writer);
+    }
+
+    public override EventDataWithMessageId ReadJson(JsonReader reader, Type objectType, EventDataWithMessageId? existingValue, bool hasExistingValue, JsonSerializer serializer)
+        => throw new NotSupportedException();
 }
