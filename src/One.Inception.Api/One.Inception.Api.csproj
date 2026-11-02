@@ -25,7 +25,7 @@
     <RootNamespace>One.Inception.Api</RootNamespace>
     <NeutralLanguage>en-US</NeutralLanguage>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-    <AssemblyVersion>13.0.0</AssemblyVersion>
+    <AssemblyVersion>14.0.0</AssemblyVersion>
 
     <OutputType>Library</OutputType>
   </PropertyGroup>
@@ -36,7 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="1nception.AspNet" Version="13.0.1" />
+    <PackageReference Include="1nception.AspNet" Version="14.0.0-preview.1" />
   </ItemGroup>
 
   <ItemGroup>

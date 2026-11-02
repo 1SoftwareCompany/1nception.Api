@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace One.Inception.Api.Playground.Domain.Samples.Ports
@@ -13,7 +14,7 @@ namespace One.Inception.Api.Playground.Domain.Samples.Ports
 
         public IPublisher<ICommand> CommandPublisher { get; set; }
 
-        public Task HandleAsync(SampleReserved @event)
+        public Task HandleAsync(SampleReserved @event, CancellationToken cancellationToken)
         {
             Console.WriteLine($"Sample with ID: '{@event.Id}' was reserved!");
 

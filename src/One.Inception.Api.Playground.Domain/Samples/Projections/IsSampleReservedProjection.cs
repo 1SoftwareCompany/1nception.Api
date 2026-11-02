@@ -1,5 +1,6 @@
 ﻿using One.Inception.Projections;
 using System.Runtime.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace One.Inception.Api.Playground.Domain.Samples
@@ -13,7 +14,7 @@ namespace One.Inception.Api.Playground.Domain.Samples
             Subscribe<SampleReserved>(x => x.Id);
         }
 
-        public Task HandleAsync(SampleReserved @event)
+        public Task HandleAsync(SampleReserved @event, CancellationToken cancellationToken)
         {
             State.IsReserved = true;
             return Task.CompletedTask;
