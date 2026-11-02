@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace One.Inception.Api.Playground.Domain.Samples.Sagas
 {
@@ -11,7 +12,7 @@ namespace One.Inception.Api.Playground.Domain.Samples.Sagas
         {
         }
 
-        public async Task HandleAsync(SampleCreated @event)
+        public async Task HandleAsync(SampleCreated @event, CancellationToken cancellationToken)
         {
             var cmd = new ReserveSample(@event.Id);
 

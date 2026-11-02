@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace One.Inception.Api.Playground.Domain.Samples.AppServices
 {
@@ -8,13 +9,13 @@ namespace One.Inception.Api.Playground.Domain.Samples.AppServices
     {
         public SampleAppService(IAggregateRepository repository) : base(repository) { }
 
-        public Task HandleAsync(CreateSample command)
+        public Task HandleAsync(CreateSample command, CancellationToken cancellationToken)
         {
             var sample = new Sample(command.Id, command.Volume);
             return repository.SaveAsync(sample);
         }
 
-        public Task HandleAsync(ReserveSample command)
+        public Task HandleAsync(ReserveSample command, CancellationToken cancellationToken)
         {
             return UpdateAsync(command.Id, ar => ar.Reserve());
         }

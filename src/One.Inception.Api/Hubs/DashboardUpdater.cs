@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using One.Inception.Discoveries;
 using One.Inception.Projections;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace One.Inception.Api.Hubs;
@@ -19,18 +20,18 @@ public class DashboardUpdater : ISystemTrigger,
             this.hub = apiAccessor.Provider.GetRequiredService<IHubContext<RebuildProjectionHub>>();
     }
 
-    public async Task HandleAsync(RebuildProjectionProgress signal)
+    public async Task HandleAsync(RebuildProjectionProgress signal, CancellationToken cancellationToken)
     {
-        await hub.ReportProgressAsync(signal.ProjectionTypeId, signal.ProcessedCount, signal.TotalCount).ConfigureAwait(false);
+        await hub.ReportProgressAsync(signal.ProjectionTypeId, signal.ProcessedCount, signal.TotalCount, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task HandleAsync(RebuildProjectionStarted signal)
+    public async Task HandleAsync(RebuildProjectionStarted signal, CancellationToken cancellationToken)
     {
-        await hub.RebuildStartedAsync(signal.ProjectionTypeId).ConfigureAwait(false);
+        await hub.RebuildStartedAsync(signal.ProjectionTypeId, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task HandleAsync(RebuildProjectionFinished signal)
+    public async Task HandleAsync(RebuildProjectionFinished signal, CancellationToken cancellationToken)
     {
-        await hub.RebuildFinishedAsync(signal.ProjectionTypeId).ConfigureAwait(false);
+        await hub.RebuildFinishedAsync(signal.ProjectionTypeId, cancellationToken).ConfigureAwait(false);
     }
 }
