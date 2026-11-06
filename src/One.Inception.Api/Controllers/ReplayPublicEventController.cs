@@ -1,66 +1,22 @@
-﻿using One.Inception.EventStore.Players;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace One.Inception.Api.Controllers;
 
 public class ReplayPublicEventController : ApiControllerBase
 {
-    private readonly IPublisher<ISystemSignal> signalPublisher;
-    private DateTimeOffset ReplayAfterDefaultDate = new DateTimeOffset(2000, 1, 1, 0, 0, 0, 0, TimeSpan.FromHours(0));
-    private DateTimeOffset ReplayBeforeDefaultDate = new DateTimeOffset(2100, 1, 1, 0, 0, 0, 0, TimeSpan.FromHours(0));
+    private readonly InceptionManagement management;
 
-    public ReplayPublicEventController(IPublisher<ISystemSignal> signalPublisher)
+    public ReplayPublicEventController(InceptionManagement management)
     {
-        this.signalPublisher = signalPublisher;
+        if (management is null) throw new ArgumentNullException(nameof(management));
+        this.management = management;
     }
 
     [HttpPost, Route("ReplayPublicEvent")]
     public async Task<IActionResult> ReplayPublicEvent([FromBody] ReplayPublicEventRequest model)
     {
-        if (model.ReplayAfter.HasValue)
-            ReplayAfterDefaultDate = model.ReplayAfter.Value;
-
-        if (model.ReplayBefore.HasValue)
-            ReplayBeforeDefaultDate = model.ReplayBefore.Value;
-
-        var replay = new ReplayPublicEventsRequested()
-        {
-            Tenant = model.Tenant,
-            RecipientBoundedContext = model.RecipientBoundedContext,
-            RecipientHandlers = model.RecipientHandlers,
-            SourceEventTypeId = model.SourceEventTypeId,
-            ReplayOptions = new ReplayEventsOptionNew()
-            {
-                After = ReplayAfterDefaultDate,
-                Before = ReplayBeforeDefaultDate
-            }
-        };
-
-        if (await signalPublisher.PublishAsync(replay))
-            return new OkObjectResult(new ResponseResult());
-
-        return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish '{nameof(ReplayPublicEventsRequested)}'", $"Unable to publish '{nameof(ReplayPublicEventsRequested)}'"));
+        return await management.ReplayPublicEvent(model).ConfigureAwait(false);
     }
-}
-
-public class ReplayPublicEventRequest
-{
-    [Required]
-    public string Tenant { get; set; }
-
-    [Required]
-    public string RecipientBoundedContext { get; set; }
-
-    [Required]
-    public string RecipientHandlers { get; set; }
-
-    [Required]
-    public string SourceEventTypeId { get; set; }
-
-    public DateTimeOffset? ReplayAfter { get; set; }
-
-    public DateTimeOffset? ReplayBefore { get; set; }
 }

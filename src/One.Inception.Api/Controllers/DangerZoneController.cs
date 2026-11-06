@@ -1,27 +1,24 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.ComponentModel.DataAnnotations;
-using One.Inception.DangerZone;
+using System.Threading.Tasks;
 
 namespace One.Inception.Api.Controllers;
 
 [Route("DangerZone")]
 public class DangerZoneController : ApiControllerBase
 {
-    private readonly DangerZoneExecutor _dangerZoneExecutor;
+    private readonly InceptionManagement management;
 
-    public DangerZoneController(DangerZoneExecutor dangerZoneExecutor)
+    public DangerZoneController(InceptionManagement management)
     {
-        if (dangerZoneExecutor is null) throw new ArgumentNullException(nameof(dangerZoneExecutor));
-        _dangerZoneExecutor = dangerZoneExecutor;
+        if (management is null) throw new ArgumentNullException(nameof(management));
+        this.management = management;
     }
 
     [HttpDelete, Route("Wipe")]
     public async Task<IActionResult> WipeAsync([FromQuery, Required] string tenant)
     {
-        await _dangerZoneExecutor.WipeDataAsync(tenant).ConfigureAwait(false);
-
-        return new OkObjectResult(new ResponseResult());
+        return await management.WipeAsync(tenant).ConfigureAwait(false);
     }
 }
