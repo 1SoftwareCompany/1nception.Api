@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>One.Inception.Api.Tests</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Machine.Specifications" Version="1.1.3" />
+    <PackageReference Include="Machine.Specifications.Runner.VisualStudio" Version="2.10.3" />
+    <PackageReference Include="Machine.Specifications.Should" Version="1.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\One.Inception.Api\One.Inception.Api.csproj" />
+  </ItemGroup>
+</Project>

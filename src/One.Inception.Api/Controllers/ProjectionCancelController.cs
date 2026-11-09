@@ -1,6 +1,3 @@
-﻿using One.Inception.MessageProcessing;
-using One.Inception.Projections;
-using One.Inception.Projections.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -11,63 +8,29 @@ namespace One.Inception.Api.Controllers;
 [Route("Projection")]
 public class ProjectionCancelController : ApiControllerBase
 {
-    private readonly IPublisher<ICommand> _publisher;
-    private readonly IInceptionContextAccessor contextAccessor;
+    private readonly InceptionManagement management;
 
-    public ProjectionCancelController(IPublisher<ICommand> publisher, IInceptionContextAccessor contextAccessor)
+    public ProjectionCancelController(InceptionManagement management)
     {
-        if (publisher is null) throw new ArgumentNullException(nameof(publisher));
-        if (contextAccessor is null) throw new ArgumentNullException(nameof(contextAccessor));
-
-        _publisher = publisher;
-        this.contextAccessor = contextAccessor;
+        if (management is null) throw new ArgumentNullException(nameof(management));
+        this.management = management;
     }
 
     [HttpPost, Route("Pause")]
     public async Task<IActionResult> Pause([FromBody] ProjcetionRequestModel model)
     {
-        var version = new Projections.ProjectionVersion(model.ProjectionContractId, ProjectionStatus.Create(model.Version.Status), model.Version.Revision, model.Version.Hash);
-        var command = new PauseProjectionVersion(new ProjectionVersionManagerId(model.ProjectionContractId, contextAccessor.Context.Tenant), version);
-
-        if (await _publisher.PublishAsync(command))
-            return new OkObjectResult(new ResponseResult());
-
-        return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(NewProjectionVersion)}'", $"Unable to publish command '{nameof(NewProjectionVersion)}'"));
+        return await management.PauseProjection(model).ConfigureAwait(false);
     }
 
     [HttpPost, Route("Cancel")]
     public async Task<IActionResult> Cancel([FromBody] ProjcetionRequestModel model)
     {
-        var version = new Projections.ProjectionVersion(model.ProjectionContractId, ProjectionStatus.Create(model.Version.Status), model.Version.Revision, model.Version.Hash);
-        var command = new CancelProjectionVersionRequest(new ProjectionVersionManagerId(model.ProjectionContractId, contextAccessor.Context.Tenant), version, model.Reason ?? "Canceled by user");
-
-        if (await _publisher.PublishAsync(command))
-            return new OkObjectResult(new ResponseResult());
-
-        return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(CancelProjectionVersionRequest)}'", $"Unable to publish command '{nameof(CancelProjectionVersionRequest)}'"));
+        return await management.CancelProjection(model).ConfigureAwait(false);
     }
 
     [HttpPost, Route("Finalize")]
     public async Task<IActionResult> Finalize([FromBody] ProjcetionRequestModel model)
     {
-        var version = new Projections.ProjectionVersion(model.ProjectionContractId, ProjectionStatus.Create(model.Version.Status), model.Version.Revision, model.Version.Hash);
-        var command = new FinalizeProjectionVersionRequest(new ProjectionVersionManagerId(model.ProjectionContractId, contextAccessor.Context.Tenant), version);
-
-        if (await _publisher.PublishAsync(command))
-            return new OkObjectResult(new ResponseResult());
-
-        return new BadRequestObjectResult(new ResponseResult<string>($"Unable to publish command '{nameof(FinalizeProjectionVersionRequest)}'", $"Unable to publish command '{nameof(FinalizeProjectionVersionRequest)}'"));
-    }
-
-    public class ProjcetionRequestModel
-    {
-        [Required]
-        public string ProjectionContractId { get; set; }
-
-        [Required]
-        public ProjectionVersionDto Version { get; set; }
-
-        [Required]
-        public string Reason { get; set; }
+        return await management.FinalizeProjection(model).ConfigureAwait(false);
     }
 }
